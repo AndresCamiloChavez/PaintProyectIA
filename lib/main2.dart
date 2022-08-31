@@ -99,7 +99,7 @@ class _CanvasPaintingState extends State<CanvasPainting> {
           child: AlertDialog(
             //Creates three buttons to pick opacity value.
             actions: <Widget>[
-              FlatButton(
+              MaterialButton(
                 child: Icon(
                   Icons.opacity,
                   size: 24,
@@ -110,7 +110,7 @@ class _CanvasPaintingState extends State<CanvasPainting> {
                   Navigator.of(context).pop();
                 },
               ),
-              FlatButton(
+              MaterialButton(
                 child: Icon(
                   Icons.opacity,
                   size: 40,
@@ -120,7 +120,7 @@ class _CanvasPaintingState extends State<CanvasPainting> {
                   Navigator.of(context).pop();
                 },
               ),
-              FlatButton(
+              MaterialButton(
                 child: Icon(
                   Icons.opacity,
                   size: 60,
@@ -151,100 +151,9 @@ class _CanvasPaintingState extends State<CanvasPainting> {
 
     final result = await ImageGallerySaver.saveImage(
         Uint8List.fromList(pngBytes),
-        quality: 80,
+        quality: 100,
         name: "canvas_image");
     print(result);
-  }
-
-  List<Widget> fabOption() {
-    return <Widget>[
-      FloatingActionButton(
-        heroTag: "paint_save",
-        child: Icon(Icons.save),
-        tooltip: 'Save',
-        onPressed: () {
-          //min: 0, max: 50
-          setState(() {
-            _save();
-          });
-        },
-      ),
-      FloatingActionButton(
-        heroTag: "paint_stroke",
-        child: Icon(Icons.brush),
-        tooltip: 'Stroke',
-        onPressed: () {
-          //min: 0, max: 50
-          setState(() {
-            _pickStroke();
-          });
-        },
-      ),
-      FloatingActionButton(
-        heroTag: "paint_opacity",
-        child: Icon(Icons.opacity),
-        tooltip: 'Opacity',
-        onPressed: () {
-          //min:0, max:1
-          setState(() {
-            _opacity();
-          });
-        },
-      ),
-      FloatingActionButton(
-          heroTag: "erase",
-          child: Icon(Icons.clear),
-          tooltip: "Erase",
-          onPressed: () {
-            setState(() {
-              points.clear();
-            });
-          }),
-      FloatingActionButton(
-        backgroundColor: Colors.white,
-        heroTag: "color_red",
-        child: colorMenuItem(Colors.red),
-        tooltip: 'Color',
-        onPressed: () {
-          setState(() {
-            selectedColor = Colors.red;
-          });
-        },
-      ),
-      FloatingActionButton(
-        backgroundColor: Colors.white,
-        heroTag: "color_green",
-        child: colorMenuItem(Colors.green),
-        tooltip: 'Color',
-        onPressed: () {
-          setState(() {
-            selectedColor = Colors.green;
-          });
-        },
-      ),
-      FloatingActionButton(
-        backgroundColor: Colors.white,
-        heroTag: "color_pink",
-        child: colorMenuItem(Colors.pink),
-        tooltip: 'Color',
-        onPressed: () {
-          setState(() {
-            selectedColor = Colors.pink;
-          });
-        },
-      ),
-      FloatingActionButton(
-        backgroundColor: Colors.white,
-        heroTag: "color_blue",
-        child: colorMenuItem(Colors.blue),
-        tooltip: 'Color',
-        onPressed: () {
-          setState(() {
-            selectedColor = Colors.blue;
-          });
-        },
-      ),
-    ];
   }
 
   @override
@@ -284,11 +193,14 @@ class _CanvasPaintingState extends State<CanvasPainting> {
           key: globalKey,
           child: Stack(
             children: <Widget>[
-               Container(
+              Container(
                 width: double.infinity,
                 height: double.infinity,
-                  child: Image.asset("assets/white.jpeg", fit: BoxFit.cover,),
+                child: Image.asset(
+                  "assets/white.jpeg",
+                  fit: BoxFit.cover,
                 ),
+              ),
               CustomPaint(
                 size: Size.infinite,
                 painter: MyPainter(
@@ -299,16 +211,96 @@ class _CanvasPaintingState extends State<CanvasPainting> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        heroTag: "paint_save",
-        child: Icon(Icons.save),
-        tooltip: 'Save',
-        onPressed: () {
-          //min: 0, max: 50
-          setState(() {
-            _save();
-          });
-        },
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            heroTag: "paint_save",
+            child: Icon(Icons.save),
+            tooltip: 'Save',
+            onPressed: () {
+              //min: 0, max: 50
+              setState(() {
+                _save();
+              });
+            },
+          ),
+          FloatingActionButton(
+            heroTag: "paint_stroke",
+            child: Icon(Icons.brush),
+            tooltip: 'Stroke',
+            onPressed: () {
+              //min: 0, max: 50
+              setState(() {
+                _pickStroke();
+              });
+            },
+          ),
+          FloatingActionButton(
+            heroTag: "paint_opacity",
+            child: Icon(Icons.opacity),
+            tooltip: 'Opacity',
+            onPressed: () {
+              //min:0, max:1
+              setState(() {
+                _opacity();
+              });
+            },
+          ),
+          FloatingActionButton(
+              heroTag: "erase",
+              child: Icon(Icons.clear),
+              tooltip: "Erase",
+              onPressed: () {
+                setState(() {
+                  points.clear();
+                });
+              }),
+          FloatingActionButton(
+            backgroundColor: Colors.white,
+            heroTag: "color_red",
+            child: colorMenuItem(Colors.red),
+            tooltip: 'Color',
+            onPressed: () {
+              setState(() {
+                selectedColor = Colors.red;
+              });
+            },
+          ),
+          FloatingActionButton(
+            backgroundColor: Colors.white,
+            heroTag: "color_green",
+            child: colorMenuItem(Colors.green),
+            tooltip: 'Color',
+            onPressed: () {
+              setState(() {
+                selectedColor = Colors.green;
+              });
+            },
+          ),
+          FloatingActionButton(
+            backgroundColor: Colors.white,
+            heroTag: "color_pink",
+            child: colorMenuItem(Colors.pink),
+            tooltip: 'Color',
+            onPressed: () {
+              setState(() {
+                selectedColor = Colors.pink;
+              });
+            },
+          ),
+          FloatingActionButton(
+            backgroundColor: Colors.white,
+            heroTag: "color_blue",
+            child: colorMenuItem(Colors.blue),
+            tooltip: 'Color',
+            onPressed: () {
+              setState(() {
+                selectedColor = Colors.blue;
+              });
+            },
+          )
+        ],
       ),
     );
   }
