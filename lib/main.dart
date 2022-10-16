@@ -18,6 +18,9 @@ class MyApp extends StatelessWidget {
       ),
       home: HomPage(),
       initialBinding: MainBinding(),
+      routes: {
+        'paintPage': (_) => CanvasPainting(),
+      },
     );
   }
 }

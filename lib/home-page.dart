@@ -20,6 +20,20 @@ class HomPage extends StatelessWidget {
                   fontStyle: FontStyle.normal,
                   fontWeight: FontWeight.w700),
             ),
+          ),
+          Container(
+            margin: EdgeInsets.symmetric(vertical: 50),
+            child: MaterialButton(
+              onPressed: () {
+                Navigator.pushNamed(context, 'paintPage');
+              },
+              padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+              color: Colors.blue,
+              child: Text(
+                'Iniciar ahora!',
+                style: TextStyle(fontSize: 18, color: Colors.white),
+              ),
+            ),
           )
         ]),
       ),
