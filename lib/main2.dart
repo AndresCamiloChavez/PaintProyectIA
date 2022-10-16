@@ -1,15 +1,13 @@
+import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
-
-//void main() => runApp(CanvasPainting());
-
-import 'package:flutter/material.dart';
+import 'package:tflite/tflite.dart';
 
 class CanvasPainting extends StatefulWidget {
   @override
@@ -24,6 +22,14 @@ class _CanvasPaintingState extends State<CanvasPainting> {
   StrokeCap strokeType = StrokeCap.round;
   double strokeWidth = 3.0;
   Color selectedColor = Colors.black;
+  dynamic currentPath = '';
+  dynamic salida;
+
+  @override
+  void initState() {
+    super.initState();
+    loadModel();
+  }
 
   Future<void> _pickStroke() async {
     //Shows AlertDialog
@@ -39,7 +45,7 @@ class _CanvasPaintingState extends State<CanvasPainting> {
             //Creates three buttons to pick stroke value.
             actions: <Widget>[
               //Resetting to default stroke value
-              FlatButton(
+              ElevatedButton(
                 child: Icon(
                   Icons.clear,
                 ),
@@ -48,7 +54,7 @@ class _CanvasPaintingState extends State<CanvasPainting> {
                   Navigator.of(context).pop();
                 },
               ),
-              FlatButton(
+              ElevatedButton(
                 child: Icon(
                   Icons.brush,
                   size: 24,
@@ -58,7 +64,7 @@ class _CanvasPaintingState extends State<CanvasPainting> {
                   Navigator.of(context).pop();
                 },
               ),
-              FlatButton(
+              ElevatedButton(
                 child: Icon(
                   Icons.brush,
                   size: 40,
@@ -68,7 +74,7 @@ class _CanvasPaintingState extends State<CanvasPainting> {
                   Navigator.of(context).pop();
                 },
               ),
-              FlatButton(
+              ElevatedButton(
                 child: Icon(
                   Icons.brush,
                   size: 60,
@@ -153,7 +159,8 @@ class _CanvasPaintingState extends State<CanvasPainting> {
         Uint8List.fromList(pngBytes),
         quality: 100,
         name: "canvas_image");
-    print(result);
+    print('resultado $result');
+    currentPath = result['filePath'];
   }
 
   @override
@@ -207,6 +214,39 @@ class _CanvasPaintingState extends State<CanvasPainting> {
                   pointsList: points,
                 ),
               ),
+              Container(
+                width: double.infinity,
+                margin: EdgeInsets.symmetric(vertical: 50, horizontal: 20),
+                child: Positioned(
+                  top: 100,
+                  child: Bounce(
+                    infinite: true,
+                    duration: Duration(milliseconds: 900),
+                    animate: true,
+                    manualTrigger: false,
+                    child: Flexible(
+                      child: Container(
+                        padding: const EdgeInsets.all(20),
+                        height: 70,
+                        decoration: const BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius: BorderRadius.all(Radius.circular(20))),
+                        child: Text(
+                          
+                          (salida != null)
+                              ? 'Eso es -> ${salida[0]['label'].toString().substring(2)}'
+                              : 'No hay un resultado',
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
+                              textAlign: ui.TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -214,17 +254,6 @@ class _CanvasPaintingState extends State<CanvasPainting> {
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          FloatingActionButton(
-            heroTag: "paint_save",
-            child: Icon(Icons.save),
-            tooltip: 'Save',
-            onPressed: () {
-              //min: 0, max: 50
-              setState(() {
-                _save();
-              });
-            },
-          ),
           FloatingActionButton(
             heroTag: "paint_stroke",
             child: Icon(Icons.brush),
@@ -255,6 +284,15 @@ class _CanvasPaintingState extends State<CanvasPainting> {
                 setState(() {
                   points.clear();
                 });
+              }),
+          FloatingActionButton(
+              heroTag: "Válidar",
+              child: Icon(Icons.check),
+              tooltip: "Válidar",
+              onPressed: () async {
+                await _save();
+                clasifyImage();
+                setState(() {});
               }),
           FloatingActionButton(
             backgroundColor: Colors.white,
@@ -321,6 +359,24 @@ class _CanvasPaintingState extends State<CanvasPainting> {
         ),
       ),
     );
+  }
+
+  loadModel() async {
+    await Tflite.loadModel(
+        model: 'assets/model_unquant.tflite', labels: 'assets/labels.txt');
+  }
+
+  clasifyImage() async {
+    var output = await Tflite.runModelOnImage(
+        path: currentPath,
+        numResults: 2,
+        threshold: 0.5,
+        imageMean: 127.5,
+        imageStd: 127.5);
+
+    setState(() {
+      salida = output;
+    });
   }
 }
 

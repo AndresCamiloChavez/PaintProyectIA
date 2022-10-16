@@ -1,0 +1,4 @@
+0 Carro
+1 Casa
+2 Edificio
+3 Arbol
