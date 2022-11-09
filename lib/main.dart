@@ -3,7 +3,7 @@ import 'package:get/route_manager.dart';
 import 'package:paint/home-page.dart';
 import 'package:paint/main_binding.dart';
 
-import 'main2.dart';
+import 'canvasPage.dart';
 
 void main() => runApp(MyApp());
 

@@ -31,20 +31,17 @@ class _CanvasPaintingState extends State<CanvasPainting> {
     loadModel();
   }
 
+/**
+ * Para seleccionar el tamaño de la brocha
+ */
   Future<void> _pickStroke() async {
-    //Shows AlertDialog
     return showDialog<void>(
       context: context,
-
-      //Dismiss alert dialog when set true
-      barrierDismissible: true, // user must tap button!
+      barrierDismissible: true,
       builder: (BuildContext context) {
-        //Clips its child in a oval shape
         return ClipOval(
           child: AlertDialog(
-            //Creates three buttons to pick stroke value.
             actions: <Widget>[
-              //Resetting to default stroke value
               ElevatedButton(
                 child: Icon(
                   Icons.clear,
@@ -91,19 +88,16 @@ class _CanvasPaintingState extends State<CanvasPainting> {
     );
   }
 
+/**
+ * Para seleccionar la opacidad del marker
+ */
   Future<void> _opacity() async {
-    //Shows AlertDialog
     return showDialog<void>(
       context: context,
-
-      //Dismiss alert dialog when set true
       barrierDismissible: true,
-
       builder: (BuildContext context) {
-        //Clips its child in a oval shape
         return ClipOval(
           child: AlertDialog(
-            //Creates three buttons to pick opacity value.
             actions: <Widget>[
               MaterialButton(
                 child: Icon(
@@ -144,6 +138,9 @@ class _CanvasPaintingState extends State<CanvasPainting> {
     );
   }
 
+/**
+ * Para guardar la imagen generada en el canvas y guardarla en el dispositivo
+ */
   Future<void> _save() async {
     final RenderRepaintBoundary boundary =
         globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
@@ -151,7 +148,7 @@ class _CanvasPaintingState extends State<CanvasPainting> {
     ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
     Uint8List pngBytes = byteData!.buffer.asUint8List();
 
-    //Request permissions if not already granted
+    //Verificamos los permisos para acceder al storage
     if (!(await Permission.storage.status.isGranted))
       await Permission.storage.request();
 
@@ -230,9 +227,9 @@ class _CanvasPaintingState extends State<CanvasPainting> {
                         height: 70,
                         decoration: const BoxDecoration(
                             color: Colors.blue,
-                            borderRadius: BorderRadius.all(Radius.circular(20))),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(20))),
                         child: Text(
-                          
                           (salida != null)
                               ? 'Eso es -> ${salida[0]['label'].toString().substring(2)}'
                               : 'No hay un resultado',
@@ -240,7 +237,7 @@ class _CanvasPaintingState extends State<CanvasPainting> {
                               color: Colors.white,
                               fontSize: 20,
                               fontWeight: FontWeight.bold),
-                              textAlign: ui.TextAlign.center,
+                          textAlign: ui.TextAlign.center,
                         ),
                       ),
                     ),
@@ -268,7 +265,7 @@ class _CanvasPaintingState extends State<CanvasPainting> {
           FloatingActionButton(
             heroTag: "paint_opacity",
             child: Icon(Icons.opacity),
-            tooltip: 'Opacity',
+            tooltip: 'Opacidad',
             onPressed: () {
               //min:0, max:1
               setState(() {
@@ -278,14 +275,16 @@ class _CanvasPaintingState extends State<CanvasPainting> {
           ),
           FloatingActionButton(
               heroTag: "erase",
-              child: Icon(Icons.clear),
-              tooltip: "Erase",
+              backgroundColor: Colors.red,
+              child: const Icon(Icons.delete),
+              tooltip: "Eliminar",
               onPressed: () {
                 setState(() {
                   points.clear();
                 });
               }),
           FloatingActionButton(
+              backgroundColor: Colors.green,
               heroTag: "Válidar",
               child: Icon(Icons.check),
               tooltip: "Válidar",
@@ -294,50 +293,50 @@ class _CanvasPaintingState extends State<CanvasPainting> {
                 clasifyImage();
                 setState(() {});
               }),
-          FloatingActionButton(
-            backgroundColor: Colors.white,
-            heroTag: "color_red",
-            child: colorMenuItem(Colors.red),
-            tooltip: 'Color',
-            onPressed: () {
-              setState(() {
-                selectedColor = Colors.red;
-              });
-            },
-          ),
-          FloatingActionButton(
-            backgroundColor: Colors.white,
-            heroTag: "color_green",
-            child: colorMenuItem(Colors.green),
-            tooltip: 'Color',
-            onPressed: () {
-              setState(() {
-                selectedColor = Colors.green;
-              });
-            },
-          ),
-          FloatingActionButton(
-            backgroundColor: Colors.white,
-            heroTag: "color_pink",
-            child: colorMenuItem(Colors.pink),
-            tooltip: 'Color',
-            onPressed: () {
-              setState(() {
-                selectedColor = Colors.pink;
-              });
-            },
-          ),
-          FloatingActionButton(
-            backgroundColor: Colors.white,
-            heroTag: "color_blue",
-            child: colorMenuItem(Colors.blue),
-            tooltip: 'Color',
-            onPressed: () {
-              setState(() {
-                selectedColor = Colors.blue;
-              });
-            },
-          )
+          // FloatingActionButton(
+          //   backgroundColor: Colors.white,
+          //   heroTag: "color_red",
+          //   child: colorMenuItem(Colors.red),
+          //   tooltip: 'Color',
+          //   onPressed: () {
+          //     setState(() {
+          //       selectedColor = Colors.red;
+          //     });
+          //   },
+          // ),
+          // FloatingActionButton(
+          //   backgroundColor: Colors.white,
+          //   heroTag: "color_green",
+          //   child: colorMenuItem(Colors.green),
+          //   tooltip: 'Color',
+          //   onPressed: () {
+          //     setState(() {
+          //       selectedColor = Colors.green;
+          //     });
+          //   },
+          // ),
+          // FloatingActionButton(
+          //   backgroundColor: Colors.white,
+          //   heroTag: "color_pink",
+          //   child: colorMenuItem(Colors.pink),
+          //   tooltip: 'Color',
+          //   onPressed: () {
+          //     setState(() {
+          //       selectedColor = Colors.pink;
+          //     });
+          //   },
+          // ),
+          // FloatingActionButton(
+          //   backgroundColor: Colors.white,
+          //   heroTag: "color_blue",
+          //   child: colorMenuItem(Colors.blue),
+          //   tooltip: 'Color',
+          //   onPressed: () {
+          //     setState(() {
+          //       selectedColor = Colors.blue;
+          //     });
+          //   },
+          // )
         ],
       ),
     );
@@ -383,16 +382,15 @@ class _CanvasPaintingState extends State<CanvasPainting> {
 class MyPainter extends CustomPainter {
   MyPainter({required this.pointsList});
 
-  //Keep track of the points tapped on the screen
+  // Lista de puntos en la pantalla
   List<TouchPoints?> pointsList;
   List<Offset> offsetPoints = [];
 
-  //This is where we can draw on canvas.
+  //A dibujar
   @override
   void paint(Canvas canvas, Size size) {
     for (int i = 0; i < pointsList.length - 1; i++) {
       if (pointsList[i] != null && pointsList[i + 1] != null) {
-        //Drawing line when two consecutive points are available
         canvas.drawLine(pointsList[i]!.points, pointsList[i + 1]!.points,
             pointsList[i]!.paint);
       } else if (pointsList[i] != null && pointsList[i + 1] == null) {
@@ -400,21 +398,16 @@ class MyPainter extends CustomPainter {
         offsetPoints.add(pointsList[i]!.points);
         offsetPoints.add(Offset(
             pointsList[i]!.points.dx + 0.1, pointsList[i]!.points.dy + 0.1));
-
-        //Draw points when two points are not next to each other
         canvas.drawPoints(
             ui.PointMode.points, offsetPoints, pointsList[i]!.paint);
       }
     }
   }
-
-  //Called when CustomPainter is rebuilt.
-  //Returning true because we want canvas to be rebuilt to reflect new changes.
+  //Volver a construir el canvas con los nuevos cambios
   @override
   bool shouldRepaint(MyPainter oldDelegate) => true;
 }
 
-//Class to define a point touched at canvas
 class TouchPoints {
   Paint paint;
   Offset points;

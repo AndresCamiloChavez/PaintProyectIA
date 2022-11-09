@@ -13,7 +13,7 @@ class HomPage extends StatelessWidget {
           Container(
             width: double.infinity,
             padding: EdgeInsets.all(5),
-            child: Text(
+            child: const Text(
               '¡Vamos a dibujar!',
               style: TextStyle(
                   fontSize: 30,
@@ -22,7 +22,7 @@ class HomPage extends StatelessWidget {
             ),
           ),
           Container(
-            margin: EdgeInsets.symmetric(vertical: 50),
+            margin: const EdgeInsets.symmetric(vertical: 50),
             child: MaterialButton(
               onPressed: () {
                 Navigator.pushNamed(context, 'paintPage');
